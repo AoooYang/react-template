@@ -105,12 +105,36 @@ const config = (env) => {
           ),
         },
         {
-          test: /\.(png|jpe?g|svg|gif)$/,
+          test: /\.(png|jpe?g|gif)$/,
           type: 'asset',
           exclude: /node_modules/,
           generator: {
             filename: 'img/[name]_[hash:8][ext]',
           },
+        },
+        {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: require.resolve('@svgr/webpack'),
+              options: {
+                prettier: false,
+                svgo: false,
+                svgoConfig: {
+                  plugins: [{ removeViewBox: false }],
+                },
+                titleProp: true,
+                ref: true,
+              },
+            },
+            {
+              loader: require.resolve('file-loader'),
+              options: {
+                name: 'img/[name]_[hash:8].[ext]',
+              },
+            },
+          ],
+          issuer: /\.[jt]sx?$/
         },
         {
           test: /\.(jsx?|tsx?)$/,
